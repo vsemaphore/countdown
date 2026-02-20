@@ -14,3 +14,8 @@ Static page with a live countdown to:
 4. Save and wait for the page URL to appear.
 
 Your site will serve `index.html` automatically.
+
+## Testing shortcut
+
+- Add `#itsnow` to the page URL to simulate the final 5 seconds before the magic moment.
+- Example: `https://<your-username>.github.io/<repo-name>/#itsnow`

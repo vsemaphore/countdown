@@ -162,6 +162,22 @@
         z-index: 1;
       }
 
+      .celebration-video {
+        width: 100%;
+        max-height: min(38vh, 320px);
+        width: 100%;
+        border-radius: 14px;
+        margin: 0 0 1rem;
+        object-fit: contain;
+        border: 1px solid color-mix(in oklab, var(--accent) 24%, transparent 76%);
+        background: #000;
+        display: none;
+      }
+
+      .celebration-video.show {
+        display: block;
+      }
+
       @keyframes pulse {
         0%,
         100% {
@@ -204,6 +220,10 @@
         Magic moment: <strong>2026-02-26 17:00:00 CEST</strong>
       </p>
 
+      <video id="celebrationVideo" class="celebration-video" preload="auto" playsinline controls>
+        <source src="video.webm" type="video/webm" />
+      </video>
+
       <section class="grid" aria-label="Countdown timer">
         <article class="item"><span class="num" id="days">0</span><span class="label">Days</span></article>
         <article class="item"><span class="num" id="hours">0</span><span class="label">Hours</span></article>
@@ -215,7 +235,9 @@
     </main>
 
     <script>
-      const target = new Date("2026-02-26T17:00:00+01:00");
+      const realTarget = new Date("2026-02-26T17:00:00+01:00");
+      const isNowTestMode = window.location.hash.toLowerCase() === "#itsnow";
+      const target = isNowTestMode ? new Date(Date.now() + 5000) : realTarget;
 
       const daysEl = document.getElementById("days");
       const hoursEl = document.getElementById("hours");
@@ -224,6 +246,7 @@
       const statusEl = document.getElementById("status");
       const festiveBadgeEl = document.getElementById("festiveBadge");
       const madeItBannerEl = document.getElementById("madeItBanner");
+      const celebrationVideoEl = document.getElementById("celebrationVideo");
       const canvas = document.getElementById("confetti");
       const ctx = canvas.getContext("2d");
       let confettiRunning = false;
@@ -288,6 +311,20 @@
         draw();
       }
 
+      function playCelebrationVideo() {
+        celebrationVideoEl.classList.add("show");
+        celebrationVideoEl.muted = false;
+        celebrationVideoEl.currentTime = 0;
+
+        const playPromise = celebrationVideoEl.play();
+        if (playPromise && typeof playPromise.catch === "function") {
+          playPromise.catch(() => {
+            celebrationVideoEl.controls = true;
+            statusEl.textContent = "🎉 Click play on the video to start with sound. 🎉";
+          });
+        }
+      }
+
       function updateCountdown() {
         const now = new Date();
         const diff = target.getTime() - now.getTime();
@@ -302,6 +339,7 @@
           statusEl.textContent = "🎉 You made it — the magic moment has arrived. 🎉";
           statusEl.classList.add("done");
           launchConfetti();
+          playCelebrationVideo();
           return true;
         }
 
