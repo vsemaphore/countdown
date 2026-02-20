@@ -1,0 +1,338 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Countdown to Freedom</title>
+    <style>
+      :root {
+        color-scheme: light dark;
+        --bg: #0b1220;
+        --card: #111a2b;
+        --text: #e8eefc;
+        --muted: #9fb0d1;
+        --accent: #6ea8fe;
+        --accent-2: #f59e0b;
+        --accent-3: #ff4d8d;
+        --done: #7ee787;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        background:
+          radial-gradient(circle at 10% 10%, #2a3f69 0%, transparent 35%),
+          radial-gradient(circle at 90% 20%, #451f5a 0%, transparent 30%),
+          radial-gradient(circle at 45% 90%, #17345a 0%, transparent 28%),
+          var(--bg);
+        color: var(--text);
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto,
+          Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+        overflow: hidden;
+      }
+
+      .wrap {
+        position: relative;
+        z-index: 2;
+        width: min(900px, 92vw);
+        background: color-mix(in oklab, var(--card) 92%, black 8%);
+        border: 1px solid color-mix(in oklab, var(--accent) 28%, transparent 72%);
+        border-radius: 20px;
+        padding: 2rem;
+        box-shadow: 0 15px 40px rgb(0 0 0 / 0.35);
+      }
+
+      .festive {
+        display: inline-flex;
+        gap: 0.45rem;
+        align-items: center;
+        margin-bottom: 0.8rem;
+        font-size: 0.9rem;
+        font-weight: 700;
+        letter-spacing: 0.03em;
+        text-transform: uppercase;
+        color: white;
+        padding: 0.35rem 0.7rem;
+        border-radius: 999px;
+        background: linear-gradient(90deg, var(--accent), var(--accent-3), var(--accent-2));
+        background-size: 200% 100%;
+        animation: shimmer 4s linear infinite;
+      }
+
+      h1 {
+        margin: 0 0 0.6rem;
+        font-size: clamp(1.4rem, 3.3vw, 2.4rem);
+        line-height: 1.15;
+      }
+
+      p {
+        margin: 0;
+      }
+
+      .sub {
+        color: var(--muted);
+        margin-bottom: 1.4rem;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(70px, 1fr));
+        gap: 0.8rem;
+      }
+
+      .item {
+        text-align: center;
+        background: color-mix(in oklab, var(--card) 75%, white 3%);
+        border: 1px solid color-mix(in oklab, var(--accent) 22%, transparent 78%);
+        border-radius: 14px;
+        padding: 1rem 0.6rem;
+        animation: pulse 2.2s ease-in-out infinite;
+      }
+
+      .item:nth-child(2) {
+        animation-delay: 0.2s;
+      }
+
+      .item:nth-child(3) {
+        animation-delay: 0.4s;
+      }
+
+      .item:nth-child(4) {
+        animation-delay: 0.6s;
+      }
+
+      .num {
+        display: block;
+        font-size: clamp(1.4rem, 4vw, 2.4rem);
+        font-weight: 700;
+      }
+
+      .label {
+        display: block;
+        font-size: 0.85rem;
+        color: var(--muted);
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+      }
+
+      .status {
+        margin-top: 1rem;
+        font-size: 1rem;
+        color: var(--muted);
+      }
+
+      .status.done {
+        color: var(--done);
+        font-weight: 600;
+      }
+
+      .made-it-banner {
+        display: none;
+        margin: 0 0 1rem;
+        padding: 0.9rem 1rem;
+        border-radius: 14px;
+        text-align: center;
+        font-size: clamp(1.5rem, 4.8vw, 3rem);
+        font-weight: 800;
+        line-height: 1.05;
+        letter-spacing: 0.02em;
+        color: #ffffff;
+        background: linear-gradient(90deg, var(--accent), var(--accent-3), var(--accent-2));
+        background-size: 200% 100%;
+        box-shadow: 0 14px 32px rgb(0 0 0 / 0.35);
+        animation: shimmer 3.5s linear infinite;
+      }
+
+      .made-it-banner.show {
+        display: block;
+      }
+
+      .confetti {
+        position: fixed;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 1;
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          transform: translateY(0);
+          box-shadow: 0 0 0 rgb(110 168 254 / 0);
+        }
+        50% {
+          transform: translateY(-4px);
+          box-shadow: 0 8px 20px rgb(110 168 254 / 0.15);
+        }
+      }
+
+      @keyframes shimmer {
+        from {
+          background-position: 0% 50%;
+        }
+        to {
+          background-position: 200% 50%;
+        }
+      }
+
+      @media (max-width: 640px) {
+        .wrap {
+          padding: 1.2rem;
+        }
+
+        .grid {
+          grid-template-columns: repeat(2, minmax(70px, 1fr));
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="confetti" class="confetti" aria-hidden="true"></canvas>
+    <main class="wrap">
+      <div id="festiveBadge" class="festive">🎉 Almost there 🎉</div>
+      <div id="madeItBanner" class="made-it-banner" aria-live="polite">🎉 YOU MADE IT! 🎉</div>
+      <h1>Tectonic Interactive Exit Countdown</h1>
+      <p class="sub">
+        Magic moment: <strong>2026-02-26 17:00:00 CEST</strong>
+      </p>
+
+      <section class="grid" aria-label="Countdown timer">
+        <article class="item"><span class="num" id="days">0</span><span class="label">Days</span></article>
+        <article class="item"><span class="num" id="hours">0</span><span class="label">Hours</span></article>
+        <article class="item"><span class="num" id="minutes">0</span><span class="label">Minutes</span></article>
+        <article class="item"><span class="num" id="seconds">0</span><span class="label">Seconds</span></article>
+      </section>
+
+      <p id="status" class="status">Counting down...</p>
+    </main>
+
+    <script>
+      // User-provided target: 2026-02-26 17:00:00 CEST (UTC+02:00)
+      const target = new Date("2026-02-26T17:00:00+02:00");
+
+      const daysEl = document.getElementById("days");
+      const hoursEl = document.getElementById("hours");
+      const minutesEl = document.getElementById("minutes");
+      const secondsEl = document.getElementById("seconds");
+      const statusEl = document.getElementById("status");
+      const festiveBadgeEl = document.getElementById("festiveBadge");
+      const madeItBannerEl = document.getElementById("madeItBanner");
+      const canvas = document.getElementById("confetti");
+      const ctx = canvas.getContext("2d");
+      let confettiRunning = false;
+
+      function resizeCanvas() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      }
+
+      window.addEventListener("resize", resizeCanvas);
+      resizeCanvas();
+
+      function launchConfetti() {
+        if (confettiRunning) {
+          return;
+        }
+        confettiRunning = true;
+
+        const colors = ["#6ea8fe", "#ff4d8d", "#f59e0b", "#7ee787", "#ffffff"];
+        const pieces = Array.from({ length: 180 }, () => ({
+          x: Math.random() * canvas.width,
+          y: -20 - Math.random() * canvas.height,
+          size: 4 + Math.random() * 7,
+          speedY: 1.2 + Math.random() * 3.2,
+          speedX: -1.2 + Math.random() * 2.4,
+          angle: Math.random() * Math.PI,
+          spin: -0.2 + Math.random() * 0.4,
+          color: colors[Math.floor(Math.random() * colors.length)]
+        }));
+
+        let frames = 0;
+
+        function draw() {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+          for (const piece of pieces) {
+            piece.x += piece.speedX;
+            piece.y += piece.speedY;
+            piece.angle += piece.spin;
+
+            if (piece.y > canvas.height + 20) {
+              piece.y = -20;
+              piece.x = Math.random() * canvas.width;
+            }
+
+            ctx.save();
+            ctx.translate(piece.x, piece.y);
+            ctx.rotate(piece.angle);
+            ctx.fillStyle = piece.color;
+            ctx.fillRect(-piece.size / 2, -piece.size / 2, piece.size, piece.size * 0.55);
+            ctx.restore();
+          }
+
+          frames += 1;
+          if (frames < 420) {
+            requestAnimationFrame(draw);
+          } else {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+          }
+        }
+
+        draw();
+      }
+
+      function updateCountdown() {
+        const now = new Date();
+        const diff = target.getTime() - now.getTime();
+
+        if (diff <= 0) {
+          daysEl.textContent = "0";
+          hoursEl.textContent = "0";
+          minutesEl.textContent = "0";
+          secondsEl.textContent = "0";
+          festiveBadgeEl.style.display = "none";
+          madeItBannerEl.classList.add("show");
+          statusEl.textContent = "🎉 You made it — the magic moment has arrived. 🎉";
+          statusEl.classList.add("done");
+          launchConfetti();
+          return true;
+        }
+
+        const totalSeconds = Math.floor(diff / 1000);
+        const days = Math.floor(totalSeconds / 86400);
+        const hours = Math.floor((totalSeconds % 86400) / 3600);
+        const minutes = Math.floor((totalSeconds % 3600) / 60);
+        const seconds = totalSeconds % 60;
+
+        daysEl.textContent = String(days);
+        hoursEl.textContent = String(hours).padStart(2, "0");
+        minutesEl.textContent = String(minutes).padStart(2, "0");
+        secondsEl.textContent = String(seconds).padStart(2, "0");
+
+        const localTarget = target.toLocaleString([], {
+          dateStyle: "medium",
+          timeStyle: "long"
+        });
+        statusEl.textContent = `Time left until ${localTarget}`;
+
+        return false;
+      }
+
+      updateCountdown();
+      const timer = setInterval(() => {
+        const done = updateCountdown();
+        if (done) {
+          clearInterval(timer);
+        }
+      }, 1000);
+    </script>
+  </body>
+</html>
